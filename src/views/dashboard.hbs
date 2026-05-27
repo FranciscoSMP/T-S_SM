@@ -1,0 +1,171 @@
+<div class="container my-4">
+    <h2 class="text-center mb-4">Reportes y Análisis del Inventario</h2>
+
+    <div class="text-center mb-4">
+        <a href="/reporte/pdf" target="_blank" rel="noopener noreferrer"
+            class="btn btn-primary shadow-sm px-4">
+            <i class="bi bi-file-earmark-pdf me-2"></i> Exportar Reporte en PDF
+        </a>
+    </div>
+
+    {{#if error}}
+    <div class="alert alert-danger text-center">{{error}}</div>
+    {{else}}
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Valor Total del Inventario</h5>
+                    <p class="card-text fs-4 fw-bold">Q {{valorInventario}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Productos Totales</h5>
+                    <p class="card-text fs-4 fw-bold">{{totalProductos}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Productos con Stock</h5>
+                    <p class="card-text fs-4 fw-bold">{{productosConStock}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Bajo Stock (%)</h5>
+                    <p class="card-text fs-4 fw-bold">{{porcentajeBajoStock}}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h5 class="text-center mb-3">Productos más vendidos</h5>
+                <canvas id="graficoMasVendidos" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 text-center" id="cardGraficoStock">
+                <h5 class="text-center mb-3">Distribución del Stock</h5>
+                <canvas id="graficoStock" height="200" style="display: none; max-height:200px;"></canvas>
+                <p id="mensajeSinDatos" class="text-muted mb-0" style="display: none;">
+                    No hay productos con bajo stock actualmente.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mt-5">Productos con Bajo Stock</h4>
+    {{#if bajoStock.length}}
+    <table class="table table-bordered table-hover mt-3">
+        <thead class="table-danger">
+            <tr>
+                <th>Nombre</th>
+                <th>Stock Actual</th>
+                <th>Umbral Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each bajoStock}}
+            <tr>
+                <td>{{nombre}}</td>
+                <td>{{stock_actual}}</td>
+                <td>{{umbral_minimo}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p class="text-muted no-products">No hay productos en niveles críticos.</p>
+    {{/if}}
+
+    <h4 class="mt-5">Productos Más Vendidos</h4>
+    {{#if masVendidos.length}}
+    <table class="table custom-table table-striped align-middle text-center">
+        <thead class="table-success">
+            <tr>
+                <th>Nombre</th>
+                <th>Total Vendido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each masVendidos}}
+            <tr>
+                <td>{{nombre}}</td>
+                <td>{{total_vendida}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p class="text-muted">Aún no hay datos de ventas registradas.</p>
+    {{/if}}
+    {{/if}}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const masVendidos = {{{ json masVendidos }}};
+    const productos = {{{ json bajoStock }}};
+
+    if (masVendidos && masVendidos.length > 0) {
+        const ctx1 = document.getElementById('graficoMasVendidos').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: masVendidos.map(p => p.nombre),
+                datasets: [{
+                    label: 'Total Vendido',
+                    data: masVendidos.map(p => p.total_vendida),
+                    backgroundColor: '#2E86C1'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    if (productos && productos.length > 0) {
+        document.getElementById('graficoStock').style.display = 'block';
+        const ctx2 = document.getElementById('graficoStock').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: productos.map(p => p.nombre),
+                datasets: [{
+                    label: 'Stock Actual',
+                    data: productos.map(p => p.stock_actual),
+                    backgroundColor: ['#2ECC71', '#F1C40F', '#E67E22', '#E74C3C', '#5DADE2']
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    } else {
+        document.getElementById('mensajeSinDatos').style.display = 'block';
+    }
+</script>

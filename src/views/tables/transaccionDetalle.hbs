@@ -1,0 +1,23 @@
+<div class="container my-4">
+    <h2 class="text-center mb-4">Detalle de Transacción</h2>
+
+    <div class="card p-4 shadow-sm">
+        <p><strong>ID:</strong> {{transaccion.id_transaccion}}</p>
+        <p><strong>Tipo:</strong> {{transaccion.tipo_transaccion}}</p>
+        <p><strong>Producto:</strong> {{transaccion.nombre}} (SKU: {{transaccion.sku}})</p>
+        <p><strong>Cantidad:</strong> {{transaccion.cantidad}}</p>
+        <p><strong>Usuario:</strong> {{transaccion.nombre_usuario}}</p>
+        <p><strong>Fecha:</strong> {{transaccion.fecha}}</p>
+        <p><strong>Motivo:</strong> {{transaccion.motivo}}</p>
+    </div>
+
+    <div class="text-center mt-4">
+    <a href="/transaccion/table" class="btn-guardar me-2" style="text-decoration: none;">Volver al listado</a>
+    <a href="/transaccion/pdf/{{transaccion.id_transaccion}}" 
+       class="btn-guardar" 
+       style="text-decoration: none;" 
+       target="_blank">
+        Descargar PDF
+    </a>
+</div>
+</div>

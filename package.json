@@ -1,0 +1,40 @@
+{
+  "name": "tecnologia_y_soluciones_sm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FranciscoSMP/Tecnologia_y_Soluciones_SM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FranciscoSMP/Tecnologia_y_Soluciones_SM/issues"
+  },
+  "homepage": "https://github.com/FranciscoSMP/Tecnologia_y_Soluciones_SM#readme",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "connect-flash": "^0.1.1",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.2",
+    "express-session": "^1.18.2",
+    "jspdf": "^4.2.1",
+    "morgan": "^1.10.1",
+    "mssql": "^12.0.0",
+    "mysql2": "^3.22.3",
+    "nodemailer": "^8.0.8",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pdfkit": "^0.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

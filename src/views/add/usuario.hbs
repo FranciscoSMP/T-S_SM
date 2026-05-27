@@ -1,0 +1,75 @@
+<section class="mt-5">
+    <h3 class="text-center my-4">Agregar Nuevo Usuario</h3>
+
+    {{#if success_msg}}
+        <div class="alert alert-success mt-3">{{success_msg}}</div>
+    {{/if}}
+    {{#if error_msg}}
+        <div class="alert alert-danger mt-3">{{error_msg}}</div>
+    {{/if}}
+
+    <form id="formAgregarUsuario" action="/usuario/guardar" method="POST" class="container form-General p-4 border rounded shadow-sm">
+        <p><font color="red">*</font> Son campos obligatorios</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label>Nombre de Usuario<font color="red">*</font></label>
+                <input type="text" name="nombre_usuario" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo_electronico" class="form-control">
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <label>Primer Nombre<font color="red">*</font></label>
+                <input type="text" name="primer_nombre" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label>Segundo Nombre</label>
+                <input type="text" name="segundo_nombre" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label>Primer Apellido<font color="red">*</font></label>
+                <input type="text" name="primer_apellido" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label>Segundo Apellido</label>
+                <input type="text" name="segundo_apellido" class="form-control">
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label>Contraseña<font color="red">*</font></label>
+                <input type="password" name="contrasenia" id="contrasenia" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label>Confirmar Contraseña<font color="red">*</font></label>
+                <input type="password" name="confirmar_contrasenia" id="confirmar_contrasenia" class="form-control" required>
+                <div id="mensajeError" class="text-danger mt-2" style="display:none;">
+                    Las contraseñas no coinciden.
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label>Rol<font color="red">*</font></label>
+                <select name="id_rol" class="form-select" required>
+                    <option value="">Seleccione un rol</option>
+                    {{#each roles}}
+                        <option value="{{this.Id_Rol}}">{{this.Rol}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn-guardar me-2">Guardar Usuario</button>
+            <a href="/usuario/table" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>

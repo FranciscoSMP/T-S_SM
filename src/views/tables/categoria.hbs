@@ -1,0 +1,66 @@
+{{#if success_msg}}
+<div id="success-alert" class="alert-overlay fade-out">
+  <div class="alert alert-success custom-alert text-center">
+    {{success_msg}}
+  </div>
+</div>
+{{/if}}
+
+{{#ifCond user.Id_Rol '==' 1}}
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-center flex-grow-1">Lista de Categorías</h2>
+    <a href="/categoria/add" class="btn btn-success btn-sm ms-3">
+      <i class="bi bi-plus-circle"></i> Nueva Categoría
+    </a>
+  </div>
+
+  {{#if categoria.length}}
+  <div class="table-responsive">
+    <table class="table custom-table table-striped align-middle text-center">
+      <thead class="table-success">
+        <tr>
+          <th>Categoría</th>
+          <th>Descripción</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each categoria}}
+        <tr>
+          <td>{{this.nombre_categoria}}</td>
+          <td>{{this.descripcion}}</td>
+          <td class="text-center">
+            <a href="/categoria/editar/{{this.id_categoria}}" class="btn btn-sm btn-warning me-2">
+              <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+              data-bs-target="#confirmDeleteModal"
+              onclick="setDeleteModal('la categoría', '{{this.nombre_categoria}}', 'categoria', '{{this.id_categoria}}')">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="alert alert-warning text-center shadow-sm">
+    No hay categorías disponibles en este momento.
+  </div>
+  {{/if}}
+  <a href="/dashboard" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+  </a>
+</div>
+
+{{else ifCond user.Id_Rol '==' 2}}
+<h2 class="text-center my-4">Acceso Denegado</h2>
+<div class="container acceso-denegado">
+  <p class="text-center">No tiene permisos para acceder a esta página.</p>
+  <div class="text-center mt-4">
+    <a href="/dashboard" class="btn btn-danger">Volver al Inicio</a>
+  </div>
+</div>
+{{/ifCond}}

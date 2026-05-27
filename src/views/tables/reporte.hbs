@@ -1,0 +1,91 @@
+<div class="container my-4">
+    <h2 class="text-center mb-4">Reportes y Análisis del Inventario</h2>
+
+    {{#if error}}
+    <div class="alert alert-danger text-center">{{error}}</div>
+    {{else}}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Valor Total del Inventario</h5>
+                    <p class="card-text fs-4 fw-bold">Q {{valorInventario}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Productos Totales</h5>
+                    <p class="card-text fs-4 fw-bold">{{totalProductos}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Productos con Stock</h5>
+                    <p class="card-text fs-4 fw-bold">{{productosConStock}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Bajo Stock (%)</h5>
+                    <p class="card-text fs-4 fw-bold">{{porcentajeBajoStock}}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mt-5">Productos con Bajo Stock</h4>
+    {{#if bajoStock.length}}
+    <table class="table table-bordered table-hover mt-3">
+        <thead class="table-danger">
+            <tr>
+                <th>Nombre</th>
+                <th>Stock Actual</th>
+                <th>Umbral Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each bajoStock}}
+            <tr>
+                <td>{{nombre}}</td>
+                <td>{{stock_actual}}</td>
+                <td>{{umbral_minimo}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p class="text-muted">No hay productos en niveles críticos.</p>
+    {{/if}}
+
+    <h4 class="mt-5">Productos Más Vendidos</h4>
+    {{#if masVendidos.length}}
+    <table class="table table-bordered table-hover mt-3">
+        <thead class="table-success">
+            <tr>
+                <th>Nombre</th>
+                <th>Total Vendido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each masVendidos}}
+            <tr>
+                <td>{{nombre}}</td>
+                <td>{{total_vendida}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p class="text-muted">Aún no hay datos de ventas registradas.</p>
+    {{/if}}
+    {{/if}}
+</div>

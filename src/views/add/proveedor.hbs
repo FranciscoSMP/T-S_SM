@@ -1,0 +1,46 @@
+{{#ifCond user.Id_Rol '==' 1}}
+<h2 class="text-center my-4">Añadir Proveedor</h2>
+
+<form action="/proveedor/guardar" method="POST" class="container form-General p-4 border rounded shadow-sm" style="max-width: 500px; margin: 0 auto;" >
+  <p class="mb-3">
+    <span style="color: red;">*</span> Son campos obligatorios
+  </p>
+
+  <div class="form-group mb-3">
+    <label for="nit" class="form-label">NIT <span style="color: red;">*</span></label>
+    <input type="text" name="nit" id="nit" class="form-control" required>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="nombre_comercial" class="form-label">Nombre Comercial</label>
+    <input type="text" name="nombre_comercial" id="nombre_comercial" class="form-control" required>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="direccion" class="form-label">Dirección</label>
+    <input type="text" name="direccion" id="direccion" class="form-control">
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="telefono" class="form-label">Teléfono</label>
+    <input type="text" name="telefono" id="telefono" class="form-control">
+  </div>
+
+  <div class="form-group mb-4">
+    <label for="correo_electronico" class="form-label">Correo Electrónico</label>
+    <input type="email" name="correo_electronico" id="correo_electronico" class="form-control">
+  </div>
+
+  <div class="text-center">
+    <button type="submit" class="btn-guardar me-2">Añadir</button>
+    <a href="/proveedor/table" class="btn btn-secondary">Cancelar</a>
+  </div>
+</form>
+
+{{else ifCond user.Id_Rol '==' 2}}
+  <h2 class="text-center my-4">Acceso Denegado</h2>
+  <div class="container acceso-denegado text-center">
+    <p>No tiene permisos para acceder a esta página.</p>
+    <a href="/dashboard" class="btn btn-danger mt-3">Volver al Inicio</a>
+  </div>
+{{/ifCond}}

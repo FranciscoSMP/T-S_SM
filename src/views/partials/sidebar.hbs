@@ -1,0 +1,73 @@
+{{#if user}}
+<nav id="sidebar" class="bg-dark text-white p-3 vh-100 d-flex flex-column justify-content-between collapsed">
+  <div>
+    <div class="text-center mb-4">
+      <h5 class="fw-bold sidebar-title">T&S SM</h5>
+      <small class="text-muted">Bienvenido, {{user.Primer_Nombre}}</small>
+    </div>
+
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2">
+        <a href="/dashboard" class="nav-link text-white">
+          <i class="fas fa-home me-2"></i><span class="label">Inicio</span>
+        </a>
+      </li>
+
+      {{#ifCond user.Id_Rol '==' 1}}
+      <li class="nav-item mt-3">
+        <strong class="text-uppercase small text-secondary">Gestión</strong>
+      </li>
+
+      <li class="nav-item mb-2">
+        <a href="/usuario/table" class="nav-link text-white">
+          <i class="fas fa-users me-2"></i><span class="label">Usuarios</span>
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/categoria/table" class="nav-link text-white">
+          <i class="fas fa-tags me-2"></i><span class="label">Categorías</span>
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/proveedor/table" class="nav-link text-white">
+          <i class="fas fa-truck me-2"></i><span class="label">Proveedores</span>
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/producto/table" class="nav-link text-white">
+          <i class="fas fa-box-open me-2"></i><span class="label">Productos</span>
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/transaccion/table" class="nav-link text-white">
+          <i class="fas fa-exchange-alt me-2"></i><span class="label">Transacciones</span>
+        </a>
+      </li>
+      {{/ifCond}}
+
+      {{#ifCond user.Id_Rol '==' 2}}
+      <li class="nav-item mt-3">
+        <strong class="text-uppercase small text-secondary">Operaciones</strong>
+      </li>
+
+      <li class="nav-item mb-2">
+        <a href="/transaccion/add" class="nav-link text-white">
+          <i class="fas fa-plus-circle me-2"></i><span class="label">Registrar Transacción</span>
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/transaccion/table" class="nav-link text-white">
+          <i class="fas fa-list me-2"></i><span class="label">Historial</span>
+        </a>
+      </li>
+      {{/ifCond}}
+    </ul>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="/logout" class="nav-link text-danger">
+      <i class="fas fa-sign-out-alt me-2"></i><span class="label">Salir</span>
+    </a>
+  </div>
+</nav>
+{{/if}}

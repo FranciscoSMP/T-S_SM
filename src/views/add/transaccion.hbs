@@ -1,0 +1,299 @@
+{{#ifCond user.Id_Rol '==' 1}}
+<h2 class="text-center my-4">Registrar Transacciones</h2>
+
+<div class="container form-General">
+    <p>
+        <font color="red">*</font> Son campos obligatorios
+    </p>
+
+    <form id="transaccionForm" class="container form-General p-4 border rounded shadow-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+                <select id="tipo_transaccion" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un Tipo</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+                    <option value="Devolucion">Devolución</option>
+                    {{#ifCond user.Id_Rol '==' 1}}
+                    <option value="Ajuste">Ajuste</option>
+                    {{/ifCond}}
+                </select>
+
+                <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+                <input type="number" id="cantidad" class="form-control" required step="1"
+                    placeholder="Para ajustes puede usar valores negativos">
+
+                <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+                <select id="id_producto" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un Producto</option>
+                    {{#each productos}}
+                    <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="motivo" class="form-label">Motivo</label>
+                <textarea id="motivo" class="form-control" placeholder="Opcional..."></textarea>
+
+                {{#ifCond user.Id_Rol '==' 1}}
+                <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
+                <select id="Id_Usuario" class="form-control" required>
+                    {{#each usuarios}}
+                    <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '=='
+                        ../user.Id_Usuario}}selected{{/ifCond}}>
+                        {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
+                    </option>
+                    {{/each}}
+                </select>
+                {{else}}
+                <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
+                {{/ifCond}}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-success" id="addTransaccionBtn">Agregar a la Cola</button>
+        </div>
+    </form>
+
+    <div class="mt-5">
+        <h4>Transacciones en Cola</h4>
+        <table class="table table-bordered table-hover mt-3" id="tablaCola">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyCola">
+                <tr id="emptyRow">
+                    <td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <form id="submitAllForm" action="/transaccion/guardar-multiples" method="POST">
+            <input type="hidden" name="transacciones" id="transaccionesHidden">
+            <button type="submit" class="btn-guardar me-2" id="btnRegistrarTodas" disabled>Registrar Todas</button>
+            <a href="/transaccion/table" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    const cola = [];
+    const form = document.getElementById('transaccionForm');
+    const tbody = document.getElementById('tbodyCola');
+    const transaccionesHidden = document.getElementById('transaccionesHidden');
+    const btnRegistrarTodas = document.getElementById('btnRegistrarTodas');
+
+    document.getElementById('addTransaccionBtn').addEventListener('click', () => {
+        const tipo = document.getElementById('tipo_transaccion').value;
+        const motivo = document.getElementById('motivo').value;
+        const cantidad = parseInt(document.getElementById('cantidad').value, 10);
+        const id_producto = document.getElementById('id_producto').value;
+        const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
+        const Id_Usuario = document.getElementById('Id_Usuario').value;
+
+        if (!tipo || isNaN(cantidad) || !id_producto || !Id_Usuario) {
+            alert('Por favor complete los campos obligatorios.');
+            return;
+        }
+
+        const esAdmin = {{ user.Id_Rol }} === 1;
+        if (cantidad < 0 && (!esAdmin || tipo !== 'Ajuste')) {
+            alert('Solo los administradores pueden ingresar cantidades negativas y únicamente en transacciones de tipo "Ajuste".');
+            return;
+        }
+
+        const stockMatch = productoTexto.match(/Stock:\s*(\d+)/);
+        const stockActual = stockMatch ? parseInt(stockMatch[1], 10) : 0;
+
+        if ((tipo === 'Salida') && cantidad > stockActual) {
+            alert(`Stock insuficiente. Solo hay ${stockActual} unidades disponibles.`);
+            return;
+        }
+
+        cola.push({ tipo, motivo, cantidad, id_producto, productoTexto, Id_Usuario });
+        actualizarTabla();
+        form.reset();
+    });
+
+
+    function actualizarTabla() {
+        tbody.innerHTML = '';
+        if (cola.length === 0) {
+            tbody.innerHTML = `<tr id="emptyRow"><td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td></tr>`;
+            btnRegistrarTodas.disabled = true;
+            return;
+        }
+
+        cola.forEach((t, index) => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${t.tipo}</td>
+                <td>${t.productoTexto}</td>
+                <td>${t.cantidad}</td>
+                <td>${t.motivo || '-'}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarTransaccion(${index})">Eliminar</button></td>
+            `;
+            tbody.appendChild(fila);
+        });
+
+        btnRegistrarTodas.disabled = false;
+        transaccionesHidden.value = JSON.stringify(cola);
+    }
+
+    function eliminarTransaccion(index) {
+        cola.splice(index, 1);
+        actualizarTabla();
+    }
+</script>
+
+{{else ifCond user.Id_Rol '==' 2}}
+<h2 class="text-center my-4">Registrar Transacción</h2>
+
+<div class="container form-General">
+    <p>
+        <font color="red">*</font> Son campos obligatorios
+    </p>
+
+    <form id="transaccionFormRol2" class="container form-General p-4 border rounded shadow-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+                <select id="tipo_transaccion" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un Tipo</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+                    <option value="Devolucion">Devolución</option>
+                </select>
+
+                <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+                <input type="number" id="cantidad" class="form-control" required step="1">
+
+                <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+                <select id="id_producto" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un Producto</option>
+                    {{#each productos}}
+                    <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="motivo" class="form-label">Motivo</label>
+                <textarea id="motivo" class="form-control" rows="6"></textarea>
+                <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-success" id="addTransaccionRol2Btn">Agregar a la Cola</button>
+        </div>
+    </form>
+
+    <div class="mt-5">
+        <h4>Transacciones en Cola</h4>
+        <table class="table table-bordered table-hover mt-3" id="tablaColaRol2">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyColaRol2">
+                <tr id="emptyRowRol2">
+                    <td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <form id="submitAllFormRol2" action="/transaccion/guardar-multiples" method="POST">
+            <input type="hidden" name="transacciones" id="transaccionesHiddenRol2">
+            <button type="submit" class="btn-guardar me-2" id="btnRegistrarRol2" disabled>Registrar Transacción</button>
+            <a href="/transaccion/table" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    const colaRol2 = [];
+    const formRol2 = document.getElementById('transaccionFormRol2');
+    const tbodyRol2 = document.getElementById('tbodyColaRol2');
+    const transaccionesHiddenRol2 = document.getElementById('transaccionesHiddenRol2');
+    const btnRegistrarRol2 = document.getElementById('btnRegistrarRol2');
+
+    document.getElementById('addTransaccionRol2Btn').addEventListener('click', () => {
+        const tipo = document.getElementById('tipo_transaccion').value;
+        const motivo = document.getElementById('motivo').value;
+        const cantidad = parseInt(document.getElementById('cantidad').value, 10);
+        const id_producto = document.getElementById('id_producto').value;
+        const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
+        const Id_Usuario = document.getElementById('Id_Usuario').value;
+
+        if (!tipo || isNaN(cantidad) || !id_producto || !Id_Usuario) {
+            alert('Por favor complete los campos obligatorios.');
+            return;
+        }
+
+        if (cantidad < 0) {
+            alert('No se permiten valores negativos en la cantidad.');
+            return;
+        }
+
+        const stockMatch = productoTexto.match(/Stock:\s*(\d+)/);
+        const stockActual = stockMatch ? parseInt(stockMatch[1], 10) : 0;
+
+        if ((tipo === 'Salida') && cantidad > stockActual) {
+            alert(`Stock insuficiente. Solo hay ${stockActual} unidades disponibles.`);
+            return;
+        }
+
+        colaRol2.push({ tipo, motivo, cantidad, id_producto, productoTexto, Id_Usuario });
+        actualizarTablaRol2();
+        formRol2.reset();
+    });
+
+    function actualizarTablaRol2() {
+        tbodyRol2.innerHTML = '';
+        if (colaRol2.length === 0) {
+            tbodyRol2.innerHTML = `<tr id="emptyRowRol2"><td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td></tr>`;
+            btnRegistrarRol2.disabled = true;
+            return;
+        }
+
+        colaRol2.forEach((t, index) => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${t.tipo}</td>
+                <td>${t.productoTexto}</td>
+                <td>${t.cantidad}</td>
+                <td>${t.motivo || '-'}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarTransaccionRol2(${index})">Eliminar</button></td>
+            `;
+            tbodyRol2.appendChild(fila);
+        });
+
+        btnRegistrarRol2.disabled = false;
+        transaccionesHiddenRol2.value = JSON.stringify(colaRol2);
+    }
+
+    function eliminarTransaccionRol2(index) {
+        colaRol2.splice(index, 1);
+        actualizarTablaRol2();
+    }
+</script>
+{{/ifCond}}

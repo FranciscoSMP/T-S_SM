@@ -1,0 +1,74 @@
+{{#if success_msg}}
+<div id="success-alert" class="alert-overlay fade-out">
+  <div class="alert alert-success custom-alert text-center">
+    {{success_msg}}
+  </div>
+</div>
+{{/if}}
+
+{{#ifCond user.Id_Rol '==' 1}}
+<div class="container my-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-center flex-grow-1">Lista de Proveedores</h2>
+    <a href="/proveedor/add" class="btn btn-success btn-sm ms-3">
+      <i class="bi bi-plus-circle"></i> Nuevo Proveedor
+    </a>
+  </div>
+
+  {{#if proveedor.length}}
+  <div class="table-responsive shadow-sm">
+    <table class="table custom-table table-striped align-middle text-center">
+      <thead class="table-success">
+        <tr>
+          <th>NIT</th>
+          <th>Nombre Comercial</th>
+          <th>Dirección</th>
+          <th>Teléfono</th>
+          <th>Correo Electrónico</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each proveedor}}
+        <tr>
+          <td>{{this.nit}}</td>
+          <td>{{this.nombre_comercial}}</td>
+          <td>{{this.direccion}}</td>
+          <td>{{this.telefono}}</td>
+          <td>{{this.correo_electronico}}</td>
+          <td>
+            <a href="/proveedor/editar/{{this.id_proveedor}}" class="btn btn-sm btn-warning me-2">
+              <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <button type="button"
+                    class="btn btn-sm btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#confirmDeleteModal"
+                    onclick="setDeleteModal('el proveedor', '{{this.nombre_comercial}}', 'proveedor', '{{this.id_proveedor}}')">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="alert alert-warning text-center shadow-sm">
+    No hay proveedores disponibles en este momento.
+  </div>
+  {{/if}}
+
+  <a href="/dashboard" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+  </a>
+</div>
+
+{{else ifCond user.Id_Rol '==' 2}}
+<h2 class="text-center my-4">Acceso Denegado</h2>
+<div class="container acceso-denegado text-center">
+  <p>No tiene permisos para acceder a esta página.</p>
+  <a href="/dashboard" class="btn btn-danger mt-3">Volver al Inicio</a>
+</div>
+{{/ifCond}}

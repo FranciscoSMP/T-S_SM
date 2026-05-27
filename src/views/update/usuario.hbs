@@ -1,0 +1,78 @@
+<section class="mt-5">
+  <h2 class="text-center my-4">Editar Usuario</h2>
+
+  {{#if success_msg}}
+    <div class="alert alert-success text-center">{{success_msg}}</div>
+  {{/if}}
+  {{#if error_msg}}
+    <div class="alert alert-danger text-center">{{error_msg}}</div>
+  {{/if}}
+
+  <form action="/usuario/actualizar/{{usuario.Id_Usuario}}" method="POST" 
+        class="container form-General p-4 border rounded shadow-sm" 
+        style="max-width: 900px; margin: 0 auto;" 
+        id="formEditarUsuario">
+
+    <p><span style="color: red;">*</span> Campos obligatorios</p>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="nombre_usuario" class="form-label">Nombre de Usuario <span style="color: red;">*</span></label>
+        <input type="text" name="nombre_usuario" id="nombre_usuario" value="{{usuario.Nombre_Usuario}}" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="correo_electronico" class="form-label">Correo Electrónico</label>
+        <input type="email" name="correo_electronico" id="correo_electronico" value="{{usuario.Correo_Electronico}}" class="form-control">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="primer_nombre" class="form-label">Primer Nombre <span style="color: red;">*</span></label>
+        <input type="text" name="primer_nombre" id="primer_nombre" value="{{usuario.Primer_Nombre}}" class="form-control" required>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="segundo_nombre" class="form-label">Segundo Nombre</label>
+        <input type="text" name="segundo_nombre" id="segundo_nombre" value="{{usuario.Segundo_Nombre}}" class="form-control">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="primer_apellido" class="form-label">Primer Apellido <span style="color: red;">*</span></label>
+        <input type="text" name="primer_apellido" id="primer_apellido" value="{{usuario.Primer_Apellido}}" class="form-control" required>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="segundo_apellido" class="form-label">Segundo Apellido</label>
+        <input type="text" name="segundo_apellido" id="segundo_apellido" value="{{usuario.Segundo_Apellido}}" class="form-control">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="contrasenia" class="form-label">Nueva Contraseña (opcional)</label>
+        <input type="password" id="contrasenia" name="contrasenia" class="form-control" placeholder="Dejar vacío para no cambiar">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="confirmar_contrasenia" class="form-label">Confirmar Nueva Contraseña</label>
+        <input type="password" id="confirmar_contrasenia" name="confirmar_contrasenia" class="form-control" placeholder="Repetir nueva contraseña">
+        <div id="mensajeError" class="text-danger mt-2" style="display:none;">Las contraseñas no coinciden.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="id_rol" class="form-label">Rol <span style="color: red;">*</span></label>
+        <select name="id_rol" id="id_rol" class="form-select" required>
+          {{#each roles}}
+            <option value="{{this.Id_Rol}}" {{#ifCond this.Id_Rol '==' ../usuario.Id_Rol}}selected{{/ifCond}}>
+              {{this.Rol}}
+            </option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-success me-2">Guardar Cambios</button>
+      <a href="/usuario/table" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</section>

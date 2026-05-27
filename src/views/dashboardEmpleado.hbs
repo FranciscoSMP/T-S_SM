@@ -1,0 +1,99 @@
+<div class="dashboard-container d-flex flex-column align-items-center justify-content-center text-center">
+  <div class="welcome-box shadow">
+    <div id="welcome-message">
+      <h1 class="fw-bold mb-2">Bienvenido</h1>
+      <h1 class="fw-bold mb-3">{{user.Primer_Nombre}} {{user.Primer_Apellido}}</h1>
+    </div>
+    <h5 class="text-muted mb-4">Sistema de Gestión de Inventario — T&S SM</h5>
+
+    <div id="clock" class="mb-2"></div>
+    <div id="date" class="fs-5"></div>
+
+    <p class="mt-4 fst-italic">
+      “Mantén el control del inventario, cada producto cuenta.”
+    </p>
+  </div>
+</div>
+
+
+<style>
+  .dashboard-container {
+    min-height: 75vh;
+  }
+
+  .welcome-box {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    max-width: 600px;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  #welcome-message h1 {
+    color: #2c3e50;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  #clock {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 3px;
+    color: #002935;
+  }
+
+  #date {
+    font-family: 'Poppins', sans-serif;
+    color: #7f8c8d;
+  }
+
+  .fst-italic {
+    color: #95a5a6;
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 768px) {
+    #clock {
+      font-size: 2.5rem;
+    }
+  }
+
+  .welcome-box {
+    animation: fadeIn 1s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  function actualizarReloj() {
+    const ahora = new Date();
+
+    let horas = ahora.getHours();
+    const minutos = ahora.getMinutes().toString().padStart(2, "0");
+    const segundos = ahora.getSeconds().toString().padStart(2, "0");
+    const ampm = horas >= 12 ? "PM" : "AM";
+    horas = horas % 12 || 12;
+
+    const horaFormateada = `${horas}:${minutos}:${segundos} ${ampm}`;
+    document.getElementById("clock").textContent = horaFormateada;
+
+    const opcionesFecha = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+    const fechaFormateada = ahora.toLocaleDateString("es-ES", opcionesFecha);
+    document.getElementById("date").textContent = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+  }
+
+  setInterval(actualizarReloj, 1000);
+  actualizarReloj();
+</script>
