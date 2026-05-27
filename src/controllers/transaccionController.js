@@ -8,8 +8,8 @@ const { enviarAlertaStock } = require('../lib/mailer');
 
 const guardarDatos = (model, redirect) => async (req, res) => {
     try {
-        if (req.user && req.user.Id_Rol === 2) {
-            req.body.Id_Usuario = req.user.Id_Usuario;
+        if (req.user && req.user.id_rol === 2) {
+            req.body.id_usuario = req.user.id_usuario;
         }
 
         await model(req.body);
@@ -37,7 +37,7 @@ exports.transaccion = async (req, res) => {
         const productos = await productoModel.getProducto();
         let usuarios = [];
 
-        if (req.user.Id_Rol === 1) {
+        if (req.user.id_rol === 1) {
             usuarios = await usuarioModel.getUsuario();
         }
 
@@ -57,8 +57,8 @@ exports.addTransaccion = guardarDatos(transaccionModel.addTransaccion, '/transac
 
 exports.tableTransaccion = async (req, res) => {
     try {
-        const rol = req.user.Id_Rol;
-        const idUsuario = req.user.Id_Usuario;
+        const rol = req.user.id_rol;
+        const idUsuario = req.user.id_usuario;
 
         const transacciones = await transaccionModel.getTransacciones(rol, idUsuario);
 
@@ -79,8 +79,8 @@ exports.tableTransaccion = async (req, res) => {
 exports.verTransaccion = async (req, res) => {
     try {
         const id = req.params.id;
-        const rol = req.user.Id_Rol;
-        const idUsuario = req.user.Id_Usuario;
+        const rol = req.user.id_rol;
+        const idUsuario = req.user.id_usuario;
 
         const transaccion = await transaccionModel.getTransaccionById(id, rol, idUsuario);
 
@@ -110,7 +110,7 @@ exports.guardarMultiples = async (req, res) => {
                 motivo: t.motivo,
                 cantidad: t.cantidad,
                 id_producto: t.id_producto,
-                Id_Usuario: t.Id_Usuario
+                id_usuario: t.id_usuario || t.Id_Usuario // Compatibilidad si el cliente sigue enviando Id_Usuario
             });
 
             if (t.tipo === 'Salida') {
@@ -134,8 +134,8 @@ exports.guardarMultiples = async (req, res) => {
 exports.generarPDF = async (req, res) => {
     try {
         const id = req.params.id;
-        const rol = req.user.Id_Rol;
-        const idUsuario = req.user.Id_Usuario;
+        const rol = req.user.id_rol;
+        const idUsuario = req.user.id_usuario;
 
         const transaccion = await transaccionModel.getTransaccionById(id, rol, idUsuario);
         if (!transaccion) {

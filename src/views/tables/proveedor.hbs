@@ -6,7 +6,7 @@
 </div>
 {{/if}}
 
-{{#ifCond user.Id_Rol '==' 1}}
+{{#ifCond user.id_rol '==' 1}}
 <div class="container my-5">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -65,7 +65,7 @@
   </a>
 </div>
 
-{{else ifCond user.Id_Rol '==' 2}}
+{{else ifCond user.id_rol '==' 2}}
 <h2 class="text-center my-4">Acceso Denegado</h2>
 <div class="container acceso-denegado text-center">
   <p>No tiene permisos para acceder a esta página.</p>

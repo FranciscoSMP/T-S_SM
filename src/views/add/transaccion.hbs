@@ -1,4 +1,4 @@
-{{#ifCond user.Id_Rol '==' 1}}
+{{#ifCond user.id_rol '==' 1}}
 <h2 class="text-center my-4">Registrar Transacciones</h2>
 
 <div class="container form-General">
@@ -15,7 +15,7 @@
                     <option value="Entrada">Entrada</option>
                     <option value="Salida">Salida</option>
                     <option value="Devolucion">Devolución</option>
-                    {{#ifCond user.Id_Rol '==' 1}}
+                    {{#ifCond user.id_rol '==' 1}}
                     <option value="Ajuste">Ajuste</option>
                     {{/ifCond}}
                 </select>
@@ -37,18 +37,17 @@
                 <label for="motivo" class="form-label">Motivo</label>
                 <textarea id="motivo" class="form-control" placeholder="Opcional..."></textarea>
 
-                {{#ifCond user.Id_Rol '==' 1}}
-                <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
-                <select id="Id_Usuario" class="form-control" required>
+                {{#ifCond user.id_rol '==' 1}}
+                <label for="id_usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
+                <select id="id_usuario" class="form-control" required>
                     {{#each usuarios}}
-                    <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '=='
-                        ../user.Id_Usuario}}selected{{/ifCond}}>
-                        {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
+                    <option value="{{this.id_usuario}}" {{#ifCond this.id_usuario '==' ../user.id_usuario}}selected{{/ifCond}}>
+                        {{this.primer_nombre}} {{this.primer_apellido}} ({{this.nombre_usuario}})
                     </option>
                     {{/each}}
                 </select>
                 {{else}}
-                <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
+                <input type="hidden" id="id_usuario" value="{{user.id_usuario}}">
                 {{/ifCond}}
             </div>
         </div>
@@ -100,14 +99,14 @@
         const cantidad = parseInt(document.getElementById('cantidad').value, 10);
         const id_producto = document.getElementById('id_producto').value;
         const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
-        const Id_Usuario = document.getElementById('Id_Usuario').value;
+        const id_usuario = document.getElementById('id_usuario').value;
 
-        if (!tipo || isNaN(cantidad) || !id_producto || !Id_Usuario) {
+        if (!tipo || isNaN(cantidad) || !id_producto || !id_usuario) {
             alert('Por favor complete los campos obligatorios.');
             return;
         }
 
-        const esAdmin = {{ user.Id_Rol }} === 1;
+        const esAdmin = {{ user.id_rol }} === 1;
         if (cantidad < 0 && (!esAdmin || tipo !== 'Ajuste')) {
             alert('Solo los administradores pueden ingresar cantidades negativas y únicamente en transacciones de tipo "Ajuste".');
             return;
@@ -121,11 +120,10 @@
             return;
         }
 
-        cola.push({ tipo, motivo, cantidad, id_producto, productoTexto, Id_Usuario });
+        cola.push({ tipo, motivo, cantidad, id_producto, productoTexto, id_usuario });
         actualizarTabla();
         form.reset();
     });
-
 
     function actualizarTabla() {
         tbody.innerHTML = '';
@@ -146,7 +144,6 @@
             `;
             tbody.appendChild(fila);
         });
-
         btnRegistrarTodas.disabled = false;
         transaccionesHidden.value = JSON.stringify(cola);
     }
@@ -157,7 +154,7 @@
     }
 </script>
 
-{{else ifCond user.Id_Rol '==' 2}}
+{{else ifCond user.id_rol '==' 2}}
 <h2 class="text-center my-4">Registrar Transacción</h2>
 
 <div class="container form-General">
@@ -191,7 +188,7 @@
             <div class="col-md-6">
                 <label for="motivo" class="form-label">Motivo</label>
                 <textarea id="motivo" class="form-control" rows="6"></textarea>
-                <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
+                <input type="hidden" id="id_usuario" value="{{user.id_usuario}}">
             </div>
         </div>
 
@@ -242,9 +239,9 @@
         const cantidad = parseInt(document.getElementById('cantidad').value, 10);
         const id_producto = document.getElementById('id_producto').value;
         const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
-        const Id_Usuario = document.getElementById('Id_Usuario').value;
+        const id_usuario = document.getElementById('id_usuario').value;
 
-        if (!tipo || isNaN(cantidad) || !id_producto || !Id_Usuario) {
+        if (!tipo || isNaN(cantidad) || !id_producto || !id_usuario) {
             alert('Por favor complete los campos obligatorios.');
             return;
         }
@@ -262,7 +259,7 @@
             return;
         }
 
-        colaRol2.push({ tipo, motivo, cantidad, id_producto, productoTexto, Id_Usuario });
+        colaRol2.push({ tipo, motivo, cantidad, id_producto, productoTexto, id_usuario });
         actualizarTablaRol2();
         formRol2.reset();
     });
@@ -286,7 +283,6 @@
             `;
             tbodyRol2.appendChild(fila);
         });
-
         btnRegistrarRol2.disabled = false;
         transaccionesHiddenRol2.value = JSON.stringify(colaRol2);
     }

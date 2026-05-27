@@ -1,4 +1,4 @@
-{{#ifCond user.Id_Rol '==' 1}}
+{{#ifCond user.id_rol '==' 1}}
 <h2 class="text-center my-4">Actualizar Proveedor</h2>
 
 <form action="/proveedor/actualizar" method="POST" class="container form-General p-4 border rounded shadow-sm" style="max-width: 800px; margin: 0 auto;">
@@ -41,7 +41,7 @@
   </div>
 </form>
 
-{{else ifCond user.Id_Rol '==' 2}}
+{{else ifCond user.id_rol '==' 2}}
 <h2 class="text-center my-4">Acceso Denegado</h2>
 <div class="container acceso-denegado text-center">
   <p>No tiene permisos para acceder a esta página.</p>

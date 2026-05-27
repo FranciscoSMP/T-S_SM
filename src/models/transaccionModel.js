@@ -11,7 +11,7 @@ const ejecutarMySQL = async (query) => {
     return rows;
 };
 
-exports.addTransaccion = async ({ tipo_transaccion, motivo, cantidad, Id_Usuario, id_producto }) => {
+exports.addTransaccion = async ({ tipo_transaccion, motivo, cantidad, id_usuario, id_producto }) => {
     const tiposValidos = ['Entrada', 'Salida', 'Devolucion', 'Ajuste'];
     if (!tiposValidos.includes(tipo_transaccion)) {
         throw new Error('Tipo de transacción inválido.');
@@ -22,7 +22,7 @@ exports.addTransaccion = async ({ tipo_transaccion, motivo, cantidad, Id_Usuario
         throw new Error('Cantidad inválida.');
     }
 
-    const usuarioId = parseInt(Id_Usuario, 10);
+    const usuarioId = parseInt(id_usuario, 10);
     const productoId = parseInt(id_producto, 10);
     if (Number.isNaN(usuarioId) || Number.isNaN(productoId)) {
         throw new Error('Usuario o producto inválido.');
@@ -32,7 +32,7 @@ exports.addTransaccion = async ({ tipo_transaccion, motivo, cantidad, Id_Usuario
     const motivoValue = motivoSafe ? `'${motivoSafe}'` : 'NULL';
 
     const query = `
-        INSERT INTO Transaccion (tipo_transaccion, motivo, cantidad, Id_Usuario, id_producto)
+        INSERT INTO transaccion (tipo_transaccion, motivo, cantidad, id_usuario, id_producto)
         VALUES ('${tipo_transaccion}', ${motivoValue}, ${cantidadNum}, ${usuarioId}, ${productoId})
     `;
     await guardarEnBaseDatos(query);

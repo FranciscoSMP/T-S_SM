@@ -1,31 +1,31 @@
-CREATE DATABASE InventarioDB;
-USE InventarioDB;
+CREATE DATABASE inventario_db;
+USE inventario_db;
 
-CREATE TABLE Rol (
-    Id_Rol INT PRIMARY KEY AUTO_INCREMENT,
-    Rol VARCHAR(50) NOT NULL
+CREATE TABLE rol (
+    id_rol INT PRIMARY KEY AUTO_INCREMENT,
+    rol VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Usuario (
-    Id_Usuario INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre_Usuario VARCHAR(50) NOT NULL UNIQUE,
-    Primer_Nombre VARCHAR(50) NOT NULL,
-    Segundo_Nombre VARCHAR(50) NULL,
-    Primer_Apellido VARCHAR(50) NOT NULL,
-    Segundo_Apellido VARCHAR(50) NULL,
-    Correo_Electronico VARCHAR(100),
-    Contrasenia VARCHAR(255) NOT NULL,
-    Id_Rol INT NOT NULL,
-    FOREIGN KEY (Id_Rol) REFERENCES Rol(Id_Rol)
+CREATE TABLE usuario (
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
+    primer_nombre VARCHAR(50) NOT NULL,
+    segundo_nombre VARCHAR(50) NULL,
+    primer_apellido VARCHAR(50) NOT NULL,
+    segundo_apellido VARCHAR(50) NULL,
+    correo_electronico VARCHAR(100),
+    contrasenia VARCHAR(255) NOT NULL,
+    id_rol INT NOT NULL,
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
 );
 
-CREATE TABLE Categoria (
+CREATE TABLE categoria (
     id_categoria INT AUTO_INCREMENT PRIMARY KEY,
     nombre_categoria VARCHAR(100) NOT NULL,
     descripcion TEXT
 );
 
-CREATE TABLE Proveedor (
+CREATE TABLE proveedor (
     id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
     nit VARCHAR(9) NOT NULL,
     nombre_comercial VARCHAR(100) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE Proveedor (
     correo_electronico VARCHAR(100)
 );
 
-CREATE TABLE Producto (
+CREATE TABLE producto (
     id_producto INT AUTO_INCREMENT PRIMARY KEY,
     sku VARCHAR(50) UNIQUE,
     nombre VARCHAR(100) NOT NULL,
@@ -44,21 +44,21 @@ CREATE TABLE Producto (
     umbral_minimo INT NOT NULL DEFAULT 0 CHECK (umbral_minimo >= 0),
     id_categoria INT NOT NULL,
     id_proveedor INT NOT NULL,
-    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria),
-    FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor)
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria),
+    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id_proveedor)
 );
 
 DELIMITER //
 
-CREATE TRIGGER tr_GenerarSKU_Producto
-BEFORE INSERT ON Producto
+CREATE TRIGGER tr_generar_sku_producto
+BEFORE INSERT ON producto
 FOR EACH ROW
 BEGIN
     DECLARE next_id INT;
     
     SELECT AUTO_INCREMENT INTO next_id
     FROM information_schema.tables
-    WHERE table_name = 'Producto' AND table_schema = DATABASE();
+    WHERE table_name = 'producto' AND table_schema = DATABASE();
     
     IF next_id IS NULL THEN
         SET next_id = 1;
@@ -69,25 +69,25 @@ END; //
 
 DELIMITER ;
 
-CREATE TABLE Transaccion (
+CREATE TABLE transaccion (
     id_transaccion INT AUTO_INCREMENT PRIMARY KEY,
     tipo_transaccion VARCHAR(20) NOT NULL CHECK (tipo_transaccion IN ('Entrada', 'Salida', 'Devolucion', 'Ajuste')),
     motivo TEXT,
     fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     cantidad INT NOT NULL,
-    Id_Usuario INT NOT NULL,
+    id_usuario INT NOT NULL,
     id_producto INT NOT NULL,
-    FOREIGN KEY (Id_Usuario) REFERENCES Usuario(Id_Usuario),
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
 
 DELIMITER //
 
-CREATE TRIGGER tr_ActualizarStock_Transaccion
-AFTER INSERT ON Transaccion
+CREATE TRIGGER tr_actualizar_stock_transaccion
+AFTER INSERT ON transaccion
 FOR EACH ROW
 BEGIN
-    UPDATE Producto
+    UPDATE producto
     SET stock_actual = stock_actual + (
         CASE
             WHEN NEW.tipo_transaccion IN ('Entrada', 'Devolucion') THEN NEW.cantidad
@@ -101,6 +101,6 @@ END; //
 
 DELIMITER ;
 
-INSERT INTO Rol (Rol) VALUES
+INSERT INTO rol (rol) VALUES
 ('Administrador'),
 ('Bodeguero/a');

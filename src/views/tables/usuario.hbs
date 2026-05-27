@@ -33,28 +33,28 @@
       <tbody>
         {{#each usuarios}}
         <tr>
-          <td>{{this.Nombre_Usuario}}</td>
-          <td>{{this.Primer_Nombre}}</td>
-          <td>{{this.Segundo_Nombre}}</td>
-          <td>{{this.Primer_Apellido}}</td>
-          <td>{{this.Segundo_Apellido}}</td>
-          <td>{{this.Correo_Electronico}}</td>
+          <td>{{this.nombre_usuario}}</td>
+          <td>{{this.primer_nombre}}</td>
+          <td>{{this.segundo_nombre}}</td>
+          <td>{{this.primer_apellido}}</td>
+          <td>{{this.segundo_apellido}}</td>
+          <td>{{this.correo_electronico}}</td>
           <td>
-            {{#ifCond this.Nombre_Rol '==' 'Administrador'}}
+            {{#ifCond this.nombre_rol '==' 'Administrador'}}
             <span class="badge bg-primary">Administrador</span>
-            {{else ifCond this.Nombre_Rol '==' 'Empleado'}}
+            {{else ifCond this.nombre_rol '==' 'Empleado'}}
             <span class="badge bg-secondary">Empleado</span>
             {{else}}
-            <span class="badge bg-info text-dark">{{this.Nombre_Rol}}</span>
+            <span class="badge bg-info text-dark">{{this.nombre_rol}}</span>
             {{/ifCond}}
           </td>
           <td>
-            <a href="/usuario/editar/{{this.Id_Usuario}}" class="btn btn-sm btn-warning me-2">
+            <a href="/usuario/editar/{{this.id_usuario}}" class="btn btn-sm btn-warning me-2">
               <i class="bi bi-pencil-square"></i> Editar
             </a>
             <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
               data-bs-target="#confirmDeleteModal"
-              onclick="setDeleteModal('Usuario', '{{this.Nombre_Usuario}}', 'usuario', {{this.Id_Usuario}})">
+              onclick="setDeleteModal('Usuario', '{{this.nombre_usuario}}', 'usuario', {{this.id_usuario}})">
               <i class="bi bi-trash"></i> Eliminar
             </button>
           </td>

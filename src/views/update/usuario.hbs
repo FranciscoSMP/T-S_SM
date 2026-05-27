@@ -8,9 +8,9 @@
     <div class="alert alert-danger text-center">{{error_msg}}</div>
   {{/if}}
 
-  <form action="/usuario/actualizar/{{usuario.Id_Usuario}}" method="POST" 
+  <form action="/usuario/actualizar/{{usuario.id_usuario}}" method="POST" 
         class="container form-General p-4 border rounded shadow-sm" 
-        style="max-width: 900px; margin: 0 auto;" 
+        style="max-width: 900px; margin: 0 auto;"
         id="formEditarUsuario">
 
     <p><span style="color: red;">*</span> Campos obligatorios</p>
@@ -18,30 +18,30 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="nombre_usuario" class="form-label">Nombre de Usuario <span style="color: red;">*</span></label>
-        <input type="text" name="nombre_usuario" id="nombre_usuario" value="{{usuario.Nombre_Usuario}}" class="form-control" required>
+        <input type="text" name="nombre_usuario" id="nombre_usuario" value="{{usuario.nombre_usuario}}" class="form-control" required>
       </div>
       <div class="col-md-6 mb-3">
         <label for="correo_electronico" class="form-label">Correo Electrónico</label>
-        <input type="email" name="correo_electronico" id="correo_electronico" value="{{usuario.Correo_Electronico}}" class="form-control">
+        <input type="email" name="correo_electronico" id="correo_electronico" value="{{usuario.correo_electronico}}" class="form-control">
       </div>
     </div>
 
     <div class="row">
       <div class="col-md-3 mb-3">
         <label for="primer_nombre" class="form-label">Primer Nombre <span style="color: red;">*</span></label>
-        <input type="text" name="primer_nombre" id="primer_nombre" value="{{usuario.Primer_Nombre}}" class="form-control" required>
+        <input type="text" name="primer_nombre" id="primer_nombre" value="{{usuario.primer_nombre}}" class="form-control" required>
       </div>
       <div class="col-md-3 mb-3">
         <label for="segundo_nombre" class="form-label">Segundo Nombre</label>
-        <input type="text" name="segundo_nombre" id="segundo_nombre" value="{{usuario.Segundo_Nombre}}" class="form-control">
+        <input type="text" name="segundo_nombre" id="segundo_nombre" value="{{usuario.segundo_nombre}}" class="form-control">
       </div>
       <div class="col-md-3 mb-3">
         <label for="primer_apellido" class="form-label">Primer Apellido <span style="color: red;">*</span></label>
-        <input type="text" name="primer_apellido" id="primer_apellido" value="{{usuario.Primer_Apellido}}" class="form-control" required>
+        <input type="text" name="primer_apellido" id="primer_apellido" value="{{usuario.primer_apellido}}" class="form-control" required>
       </div>
       <div class="col-md-3 mb-3">
         <label for="segundo_apellido" class="form-label">Segundo Apellido</label>
-        <input type="text" name="segundo_apellido" id="segundo_apellido" value="{{usuario.Segundo_Apellido}}" class="form-control">
+        <input type="text" name="segundo_apellido" id="segundo_apellido" value="{{usuario.segundo_apellido}}" class="form-control">
       </div>
     </div>
 
@@ -62,8 +62,8 @@
         <label for="id_rol" class="form-label">Rol <span style="color: red;">*</span></label>
         <select name="id_rol" id="id_rol" class="form-select" required>
           {{#each roles}}
-            <option value="{{this.Id_Rol}}" {{#ifCond this.Id_Rol '==' ../usuario.Id_Rol}}selected{{/ifCond}}>
-              {{this.Rol}}
+            <option value="{{this.id_rol}}" {{#ifCond this.id_rol '==' ../usuario.id_rol}}selected{{/ifCond}}>
+              {{this.rol}}
             </option>
           {{/each}}
         </select>

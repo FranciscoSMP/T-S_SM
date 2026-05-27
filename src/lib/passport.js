@@ -6,7 +6,7 @@ module.exports = function(passport) {
     passport.use(new LocalStrategy(async (username, password, done) => {
         try {
             const [rows] = await poolPromise.execute(
-                'SELECT * FROM Usuario WHERE Nombre_Usuario = ?', 
+                'SELECT * FROM usuario WHERE nombre_usuario = ?', 
                 [username]
             );
             
@@ -15,7 +15,7 @@ module.exports = function(passport) {
                 return done(null, false, { message: 'Usuario o contraseña incorrecta' });
             }
 
-            const isMatch = await bcrypt.compare(password, user.Contrasenia);
+            const isMatch = await bcrypt.compare(password, user.contrasenia);
             if (isMatch) {
                 return done(null, user);
             } else {
@@ -27,16 +27,16 @@ module.exports = function(passport) {
     }));
 
     passport.serializeUser((user, done) => {
-        done(null, user.Id_Usuario);
+        done(null, user.id_usuario);
     });
 
     passport.deserializeUser(async (id, done) => {
         try {
             const [rows] = await poolPromise.execute(`
-                SELECT u.*, r.Rol 
-                FROM Usuario u
-                INNER JOIN Rol r ON u.Id_Rol = r.Id_Rol
-                WHERE u.Id_Usuario = ?
+                SELECT u.*, r.rol 
+                FROM usuario u
+                INNER JOIN rol r ON u.id_rol = r.id_rol
+                WHERE u.id_usuario = ?
             `, [id]);
             const user = rows[0];
             done(null, user);

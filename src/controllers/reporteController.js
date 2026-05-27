@@ -6,7 +6,7 @@ const transaccionModel = require('../models/transaccionModel');
 
 exports.mostrarReportes = async (req, res) => {
     try {
-        const rol = req.user.Id_Rol;
+        const rol = req.user.id_rol;
 
         if (rol === 1) {
             const productos = await productoModel.getProducto();

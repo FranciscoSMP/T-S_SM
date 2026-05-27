@@ -19,7 +19,7 @@ exports.addUsuario = async ({ nombre_usuario, primer_nombre, segundo_nombre, pri
         const hash = await bcrypt.hash(contrasenia, 10);
 
         const query = `
-            INSERT INTO Usuario (Nombre_Usuario, Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Correo_Electronico, Contrasenia, Id_Rol)
+            INSERT INTO usuario (nombre_usuario, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo_electronico, contrasenia, id_rol)
             VALUES ('${nombre_usuario}', '${primer_nombre}', '${segundo_nombre}', '${primer_apellido}', '${segundo_apellido}', '${correo_electronico}', '${hash}', ${id_rol})
         `;
 
@@ -35,7 +35,7 @@ exports.addUsuario = async ({ nombre_usuario, primer_nombre, segundo_nombre, pri
 
 exports.obtenerRoles = async () => {
     try {
-        const query = 'SELECT * FROM Rol';
+        const query = 'SELECT * FROM rol';
         const resultado = await ejecutarMySQL(query);
         return resultado;
     } catch (error) {
@@ -47,17 +47,17 @@ exports.obtenerRoles = async () => {
 exports.getUsuario = async () => {
     const [rows] = await poolPromise.query(`
             SELECT 
-                U.Id_Usuario,
-                U.Nombre_Usuario,
-                U.Primer_Nombre,
-                U.Segundo_Nombre,
-                U.Primer_Apellido,
-                U.Segundo_Apellido,
-                U.Correo_Electronico,
-                R.Rol AS Nombre_Rol
-            FROM Usuario U
-            INNER JOIN Rol R ON U.Id_Rol = R.Id_Rol
-            ORDER BY U.Id_Usuario ASC
+                u.id_usuario,
+                u.nombre_usuario,
+                u.primer_nombre,
+                u.segundo_nombre,
+                u.primer_apellido,
+                u.segundo_apellido,
+                u.correo_electronico,
+                r.rol AS nombre_rol
+            FROM usuario u
+            INNER JOIN rol r ON u.id_rol = r.id_rol
+            ORDER BY u.id_usuario ASC
     `);
     return rows;
 };
@@ -65,10 +65,10 @@ exports.getUsuario = async () => {
 exports.getUsuarioById = async (id) => {
     const query = `
         SELECT 
-            Id_Usuario, Nombre_Usuario, Primer_Nombre, Segundo_Nombre, 
-            Primer_Apellido, Segundo_Apellido, Correo_Electronico, Id_Rol
-        FROM Usuario
-        WHERE Id_Usuario = ${id}
+            id_usuario, nombre_usuario, primer_nombre, segundo_nombre, 
+            primer_apellido, segundo_apellido, correo_electronico, id_rol
+        FROM usuario
+        WHERE id_usuario = ${id}
     `;
     const result = await ejecutarMySQL(query);
     return result[0];
@@ -76,23 +76,23 @@ exports.getUsuarioById = async (id) => {
 
 exports.updateUsuario = async ({ id_usuario, nombre_usuario, correo_electronico, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, contrasenia, id_rol }) => {
     let query = `
-        UPDATE Usuario
+        UPDATE usuario
         SET
-            Nombre_Usuario = '${nombre_usuario}',
-            Correo_Electronico = '${correo_electronico}',
-            Primer_Nombre = '${primer_nombre}',
-            Segundo_Nombre = '${segundo_nombre}',
-            Primer_Apellido = '${primer_apellido}',
-            Segundo_Apellido = '${segundo_apellido}',
-            Id_Rol = ${id_rol}
+            nombre_usuario = '${nombre_usuario}',
+            correo_electronico = '${correo_electronico}',
+            primer_nombre = '${primer_nombre}',
+            segundo_nombre = '${segundo_nombre}',
+            primer_apellido = '${primer_apellido}',
+            segundo_apellido = '${segundo_apellido}',
+            id_rol = ${id_rol}
     `;
 
     if (contrasenia && contrasenia.trim() !== '') {
         const hash = await bcrypt.hash(contrasenia, 10);
-        query += `, Contrasenia = '${hash}'`;
+        query += `, contrasenia = '${hash}'`;
     }
 
-    query += ` WHERE Id_Usuario = ${id_usuario}`;
+    query += ` WHERE id_usuario = ${id_usuario}`;
 
     try {
         await ejecutarMySQL(query);
@@ -105,7 +105,7 @@ exports.updateUsuario = async ({ id_usuario, nombre_usuario, correo_electronico,
 
 exports.deleteUsuario = async (id_usuario) => {
     try {
-        const query = `DELETE FROM Usuario WHERE Id_Usuario = ${id_usuario}`;
+        const query = `DELETE FROM usuario WHERE id_usuario = ${id_usuario}`;
         await guardarEnBaseDatos(query);
         return { message: 'Usuario eliminado correctamente' };
     } catch (error) {

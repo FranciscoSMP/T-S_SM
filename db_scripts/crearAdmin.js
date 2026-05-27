@@ -16,7 +16,7 @@ async function crearUsuarioAdministrador() {
         console.log(`Contraseña cifrada para '${nombreUsuario}': ${hashContrasena}`);
 
         const [usuarioExistente] = await poolPromise.execute(
-            'SELECT * FROM Usuario WHERE Nombre_Usuario = ?',
+            'SELECT * FROM usuario WHERE nombre_usuario = ?',
             [nombreUsuario]
         );
 
@@ -26,19 +26,19 @@ async function crearUsuarioAdministrador() {
         }
 
         const [rolAdmin] = await poolPromise.execute(
-            'SELECT Id_Rol FROM Rol WHERE Rol = ?',
+            'SELECT id_rol FROM rol WHERE rol = ?',
             ['Administrador']
         );
 
         if (rolAdmin.length === 0) {
-            throw new Error('No se encontró el rol "Administrador". Verifique la tabla Rol.');
+            throw new Error('No se encontró el rol "Administrador". Verifique la tabla rol.');
         }
 
-        const idRol = rolAdmin[0].Id_Rol;
+        const idRol = rolAdmin[0].id_rol;
 
         await poolPromise.execute(`
-            INSERT INTO Usuario
-                (Nombre_Usuario, Primer_Nombre, Primer_Apellido, Correo_Electronico, Contrasenia, Id_Rol)
+            INSERT INTO usuario
+                (nombre_usuario, primer_nombre, primer_apellido, correo_electronico, contrasenia, id_rol)
             VALUES
                 (?, ?, ?, ?, ?, ?)
         `, [nombreUsuario, primerNombre, primerApellido, correo, hashContrasena, idRol]);
