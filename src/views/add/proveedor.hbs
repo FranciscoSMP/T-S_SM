@@ -1,7 +1,7 @@
 {{#ifCond user.id_rol '==' 1}}
 <h2 class="text-center my-4">Añadir Proveedor</h2>
 
-<form action="/proveedor/guardar" method="POST" class="container form-General p-4 border rounded shadow-sm" style="max-width: 500px; margin: 0 auto;" >
+<form id="formAgregarProveedor" action="/proveedor/guardar" method="POST" class="container form-General p-4 border rounded shadow-sm" style="max-width: 500px; margin: 0 auto;" >
   <p class="mb-3">
     <span style="color: red;">*</span> Son campos obligatorios
   </p>
@@ -12,7 +12,7 @@
   </div>
 
   <div class="form-group mb-3">
-    <label for="nombre_comercial" class="form-label">Nombre Comercial</label>
+    <label for="nombre_comercial" class="form-label">Nombre Comercial <span style="color: red;">*</span></label>
     <input type="text" name="nombre_comercial" id="nombre_comercial" class="form-control" required>
   </div>
 
@@ -24,11 +24,17 @@
   <div class="form-group mb-3">
     <label for="telefono" class="form-label">Teléfono</label>
     <input type="text" name="telefono" id="telefono" class="form-control">
+    <div class="invalid-feedback">
+        Por favor, ingrese un número de teléfono válido (solo números).
+    </div>
   </div>
 
   <div class="form-group mb-4">
     <label for="correo_electronico" class="form-label">Correo Electrónico</label>
     <input type="email" name="correo_electronico" id="correo_electronico" class="form-control">
+    <div class="invalid-feedback">
+        Por favor, ingrese un correo electrónico válido (ej. usuario@dominio.com).
+    </div>
   </div>
 
   <div class="text-center">

@@ -2,10 +2,26 @@
   <h2 class="text-center my-4">Editar Usuario</h2>
 
   {{#if success_msg}}
-    <div class="alert alert-success text-center">{{success_msg}}</div>
+      <div class="alert-overlay" id="auto-dismiss-alert">
+          <div class="alert alert-success custom-alert d-flex align-items-center shadow-lg" role="alert">
+              <i class="fas fa-check-circle fs-4 me-3"></i>
+              <div>
+                  <strong>¡Éxito!</strong><br>
+                  {{success_msg}}
+              </div>
+          </div>
+      </div>
   {{/if}}
   {{#if error_msg}}
-    <div class="alert alert-danger text-center">{{error_msg}}</div>
+      <div class="alert-overlay" id="auto-dismiss-alert">
+          <div class="alert alert-danger custom-alert d-flex align-items-center shadow-lg" role="alert">
+              <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
+              <div>
+                  <strong>Atención</strong><br>
+                  {{error_msg}}
+              </div>
+          </div>
+      </div>
   {{/if}}
 
   <form action="/usuario/actualizar/{{usuario.id_usuario}}" method="POST" 
@@ -21,8 +37,11 @@
         <input type="text" name="nombre_usuario" id="nombre_usuario" value="{{usuario.nombre_usuario}}" class="form-control" required>
       </div>
       <div class="col-md-6 mb-3">
-        <label for="correo_electronico" class="form-label">Correo Electrónico</label>
-        <input type="email" name="correo_electronico" id="correo_electronico" value="{{usuario.correo_electronico}}" class="form-control">
+        <label for="correo_electronico_edit" class="form-label">Correo Electrónico</label>
+        <input type="email" name="correo_electronico" id="correo_electronico_edit" value="{{usuario.correo_electronico}}" class="form-control">
+        <div class="invalid-feedback">
+            Por favor, ingrese un correo electrónico válido (ej. usuario@dominio.com).
+        </div>
       </div>
     </div>
 
@@ -47,13 +66,28 @@
 
     <div class="row">
       <div class="col-md-6 mb-3">
-        <label for="contrasenia" class="form-label">Nueva Contraseña (opcional)</label>
-        <input type="password" id="contrasenia" name="contrasenia" class="form-control" placeholder="Dejar vacío para no cambiar">
+        <label for="contrasenia_edit" class="form-label">Nueva Contraseña (opcional)</label>
+        <div class="input-group">
+            <input type="password" id="contrasenia_edit" name="contrasenia" class="form-control" placeholder="Dejar vacío para no cambiar">
+            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="contrasenia_edit">
+                <i class="fas fa-eye"></i>
+            </button>
+            <div class="invalid-feedback">
+                La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.
+            </div>
+        </div>
       </div>
       <div class="col-md-6 mb-3">
-        <label for="confirmar_contrasenia" class="form-label">Confirmar Nueva Contraseña</label>
-        <input type="password" id="confirmar_contrasenia" name="confirmar_contrasenia" class="form-control" placeholder="Repetir nueva contraseña">
-        <div id="mensajeError" class="text-danger mt-2" style="display:none;">Las contraseñas no coinciden.</div>
+        <label for="confirmar_contrasenia_edit" class="form-label">Confirmar Nueva Contraseña</label>
+        <div class="input-group">
+            <input type="password" id="confirmar_contrasenia_edit" name="confirmar_contrasenia" class="form-control" placeholder="Repetir nueva contraseña">
+            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmar_contrasenia_edit">
+                <i class="fas fa-eye"></i>
+            </button>
+            <div class="invalid-feedback">
+                Las contraseñas no coinciden.
+            </div>
+        </div>
       </div>
     </div>
 

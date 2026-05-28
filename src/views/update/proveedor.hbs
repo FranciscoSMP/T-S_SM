@@ -1,7 +1,7 @@
 {{#ifCond user.id_rol '==' 1}}
 <h2 class="text-center my-4">Actualizar Proveedor</h2>
 
-<form action="/proveedor/actualizar" method="POST" class="container form-General p-4 border rounded shadow-sm" style="max-width: 800px; margin: 0 auto;">
+<form id="formEditarProveedor" action="/proveedor/actualizar" method="POST" class="container form-General p-4 border rounded shadow-sm" style="max-width: 800px; margin: 0 auto;">
   <input type="hidden" name="id_proveedor" value="{{proveedor.id_proveedor}}" />
 
   <div class="row">
@@ -24,13 +24,19 @@
 
     <div class="col-md-6">
       <div class="form-group mb-3">
-        <label for="telefono" class="form-label">Teléfono</label>
-        <input type="text" name="telefono" id="telefono" class="form-control" value="{{proveedor.telefono}}">
+        <label for="telefono_edit" class="form-label">Teléfono</label>
+        <input type="text" name="telefono" id="telefono_edit" class="form-control" value="{{proveedor.telefono}}">
+        <div class="invalid-feedback">
+            Por favor, ingrese un número de teléfono válido (solo números).
+        </div>
       </div>
 
       <div class="form-group mb-3">
-        <label for="correo_electronico" class="form-label">Correo Electrónico</label>
-        <input type="email" name="correo_electronico" id="correo_electronico" class="form-control" value="{{proveedor.correo_electronico}}">
+        <label for="correo_electronico_edit" class="form-label">Correo Electrónico</label>
+        <input type="email" name="correo_electronico" id="correo_electronico_edit" class="form-control" value="{{proveedor.correo_electronico}}">
+        <div class="invalid-feedback">
+            Por favor, ingrese un correo electrónico válido (ej. usuario@dominio.com).
+        </div>
       </div>
     </div>
   </div>

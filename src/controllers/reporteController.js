@@ -3,6 +3,8 @@ const { es } = require('date-fns/locale');
 const { jsPDF } = require('jspdf');
 const productoModel = require('../models/productoModel');
 const transaccionModel = require('../models/transaccionModel');
+const autoTableModule = require('jspdf-autotable');
+const autoTable = autoTableModule.default || autoTableModule;
 
 exports.mostrarReportes = async (req, res) => {
     try {
@@ -51,29 +53,71 @@ exports.generarReportePDF = async (req, res) => {
         const valorInventario = productos.reduce((t, p) => t + (p.precio_unitario * p.stock_actual), 0);
 
         const doc = new jsPDF();
-        doc.setFont('helvetica', 'bold');
-        doc.text('Reporte de Inventario', 70, 15);
-        doc.setFontSize(11);
-        doc.text(`Fecha: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`, 14, 25);
+        const pageWidth = doc.internal.pageSize.width;
 
+        doc.setFillColor(44, 62, 80);
+        doc.rect(0, 0, pageWidth, 28, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text('Tecnología y Soluciones SM', 14, 18);
+        doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
-        doc.text(`Valor total inventario: Q${valorInventario.toFixed(2)}`, 14, 35);
-        doc.text(`Productos totales: ${totalProductos}`, 14, 42);
-        doc.text(`Productos con stock: ${productosConStock}`, 14, 49);
-        doc.text(`Productos bajo stock: ${bajoStock.length}`, 14, 56);
+        doc.text('Sistema de Gestión de Inventario', pageWidth - 70, 18);
+
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Reporte Consolidado de Inventario', 14, 42);
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Fecha de emisión: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`, 14, 49);
+
+        doc.setFillColor(245, 245, 245);
+        doc.setDrawColor(220, 220, 220);
+        doc.rect(14, 55, 85, 25, 'FD');
+        doc.rect(105, 55, 85, 25, 'FD');
 
         doc.setFont('helvetica', 'bold');
-        doc.text('Productos con Bajo Stock:', 14, 70);
+        doc.text('Valor Total del Inventario', 18, 63);
         doc.setFont('helvetica', 'normal');
-        bajoStock.slice(0, 10).forEach((p, i) => {
-            doc.text(`${i + 1}. ${p.nombre} - ${p.stock_actual} unidades`, 14, 80 + (i * 6));
+        doc.text(`Q ${valorInventario.toFixed(2)}`, 18, 72);
+
+        doc.setFont('helvetica', 'bold');
+        doc.text('Resumen de Productos', 109, 63);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Total: ${totalProductos} | Con Stock: ${productosConStock} | Críticos: ${bajoStock.length}`, 109, 72);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text('Top Productos Más Vendidos', 14, 95);
+
+        const tablaVentasBody = masVendidos.slice(0, 10).map((p, i) => [i + 1, p.nombre, `${p.total_vendida} uds.`]);
+
+        autoTable(doc, {
+            startY: 100,
+            head: [['#', 'Nombre del Producto', 'Cantidad Vendida']],
+            body: tablaVentasBody.length ? tablaVentasBody : [['-', 'No hay registros de salidas', '-']],
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+            alternateRowStyles: { fillColor: [250, 250, 250] },
+            styles: { font: 'helvetica', fontSize: 9 }
         });
 
-        doc.setFont('helvetica', 'bold');
-        doc.text('Productos Más Vendidos:', 14, 150);
-        doc.setFont('helvetica', 'normal');
-        masVendidos.slice(0, 10).forEach((p, i) => {
-            doc.text(`${i + 1}. ${p.nombre} - ${p.total_vendida} unidades`, 14, 160 + (i * 6));
+        const finalY = doc.lastAutoTable.finalY || 100;
+        doc.text('Productos con Nivel de Stock Crítico', 14, finalY + 15);
+
+        const tablaStockBody = bajoStock.slice(0, 10).map((p, i) => [i + 1, p.nombre, `${p.stock_actual} uds.`]);
+
+        autoTable(doc, {
+            startY: finalY + 20,
+            head: [['#', 'Nombre del Producto', 'Existencia Actual']],
+            body: tablaStockBody.length ? tablaStockBody : [['-', 'No hay productos en estado crítico', '-']],
+            theme: 'grid',
+            headStyles: { fillColor: [192, 57, 43], textColor: 255 },
+            alternateRowStyles: { fillColor: [250, 250, 250] },
+            styles: { font: 'helvetica', fontSize: 9 }
         });
 
         const fileName = `Reporte_Inventario_${format(new Date(), "yyyyMMdd_HHmm")}.pdf`;

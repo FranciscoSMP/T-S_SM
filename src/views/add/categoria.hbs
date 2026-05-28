@@ -1,5 +1,5 @@
 {{#ifCond user.id_rol '==' 1}}
-<h2 class="text-center my-4">Añadir Categoria</h2>
+<h2 class="text-center my-4">Añadir Categoría</h2>
 
 <form action="/categoria/guardar" method="POST" class="container form-General p-4 border rounded shadow-sm"
   style="max-width: 500px; margin: 0 auto;">
@@ -12,7 +12,7 @@
 
   <div class="form-group mb-4">
     <label for="descripcion" class="form-label">Descripción</label>
-    <input type="text" name="descripcion" id="descripcion" class="form-control">
+    <textarea name="descripcion" id="descripcion" class="form-control" rows="4" placeholder="Ingrese una descripción para la categoría..."></textarea>
   </div>
 
   <div class="text-center mt-4">
